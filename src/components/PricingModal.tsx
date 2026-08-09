@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, Zap, Check, ShieldCheck, Sparkles, CreditCard, Lock, ArrowRight, Gift, PartyPopper } from 'lucide-react';
+import { X, Zap, Check, ShieldCheck, Sparkles, CreditCard, Lock, ArrowRight, Gift, PartyPopper, Copy, Smartphone } from 'lucide-react';
 import { CreditState, addCredits } from '../utils/creditManager';
 import { motion, AnimatePresence } from 'motion/react';
 
@@ -31,10 +31,11 @@ export const PricingModal: React.FC<PricingModalProps> = ({
 }) => {
   const [selectedPlan, setSelectedPlan] = useState<PlanTier | null>(null);
   const [paymentStep, setPaymentStep] = useState<'tiers' | 'checkout' | 'success'>('tiers');
-  const [paymentMethod, setPaymentMethod] = useState<'card' | 'gpay' | 'apple'>('card');
+  const [paymentMethod, setPaymentMethod] = useState<'card' | 'gpay' | 'apple' | 'm10'>('card');
   const [isProcessing, setIsProcessing] = useState(false);
   const [cardHolder, setCardHolder] = useState('Alex Morgan');
   const [cardNumber, setCardNumber] = useState('•••• •••• •••• 4242');
+  const [phoneCopied, setPhoneCopied] = useState(false);
 
   const plans: PlanTier[] = [
     {
@@ -107,6 +108,12 @@ export const PricingModal: React.FC<PricingModalProps> = ({
   ];
 
   if (!isOpen) return null;
+
+  const handleCopyPhone = () => {
+    navigator.clipboard.writeText('051-936-45-48');
+    setPhoneCopied(true);
+    setTimeout(() => setPhoneCopied(false), 2000);
+  };
 
   const handleSelectPlan = (plan: PlanTier) => {
     if (plan.id === 'free') {
@@ -311,10 +318,10 @@ export const PricingModal: React.FC<PricingModalProps> = ({
               {/* Payment Methods */}
               <div className="mt-5">
                 <label className="text-xs font-bold text-slate-300 block mb-2">Select Payment Method</label>
-                <div className="grid grid-cols-3 gap-2">
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                   <button
                     onClick={() => setPaymentMethod('card')}
-                    className={`py-2 px-3 rounded-xl border text-xs font-bold flex items-center justify-center gap-1.5 ${
+                    className={`py-2 px-2.5 rounded-xl border text-xs font-bold flex items-center justify-center gap-1.5 ${
                       paymentMethod === 'card'
                         ? 'bg-indigo-600/20 border-indigo-500 text-indigo-300'
                         : 'bg-slate-900 border-slate-800 text-slate-400 hover:text-white'
@@ -324,7 +331,7 @@ export const PricingModal: React.FC<PricingModalProps> = ({
                   </button>
                   <button
                     onClick={() => setPaymentMethod('gpay')}
-                    className={`py-2 px-3 rounded-xl border text-xs font-bold flex items-center justify-center gap-1.5 ${
+                    className={`py-2 px-2.5 rounded-xl border text-xs font-bold flex items-center justify-center gap-1.5 ${
                       paymentMethod === 'gpay'
                         ? 'bg-indigo-600/20 border-indigo-500 text-indigo-300'
                         : 'bg-slate-900 border-slate-800 text-slate-400 hover:text-white'
@@ -334,13 +341,23 @@ export const PricingModal: React.FC<PricingModalProps> = ({
                   </button>
                   <button
                     onClick={() => setPaymentMethod('apple')}
-                    className={`py-2 px-3 rounded-xl border text-xs font-bold flex items-center justify-center gap-1.5 ${
+                    className={`py-2 px-2.5 rounded-xl border text-xs font-bold flex items-center justify-center gap-1.5 ${
                       paymentMethod === 'apple'
                         ? 'bg-indigo-600/20 border-indigo-500 text-indigo-300'
                         : 'bg-slate-900 border-slate-800 text-slate-400 hover:text-white'
                     }`}
                   >
                     Apple Pay
+                  </button>
+                  <button
+                    onClick={() => setPaymentMethod('m10')}
+                    className={`py-2 px-2.5 rounded-xl border text-xs font-bold flex items-center justify-center gap-1.5 ${
+                      paymentMethod === 'm10'
+                        ? 'bg-amber-500/20 border-amber-500 text-amber-300'
+                        : 'bg-slate-900 border-slate-800 text-slate-400 hover:text-white'
+                    }`}
+                  >
+                    <Smartphone className="w-3.5 h-3.5 text-amber-400" /> m10
                   </button>
                 </div>
               </div>
@@ -386,6 +403,31 @@ export const PricingModal: React.FC<PricingModalProps> = ({
                   </div>
                 </div>
               )}
+
+              {/* m10 Details */}
+              {paymentMethod === 'm10' && (
+                <div className="mt-4 space-y-3 bg-slate-900/90 border border-slate-800 rounded-2xl p-4">
+                  <div className="flex items-center justify-between bg-slate-950 p-3.5 rounded-xl border border-slate-800">
+                    <div>
+                      <span className="text-[11px] font-semibold text-slate-400 block">m10 Transfer Phone Number</span>
+                      <span className="text-base sm:text-lg font-black text-amber-400 font-mono tracking-wider">051-936-45-48</span>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={handleCopyPhone}
+                      className="px-3.5 py-2 bg-indigo-600/20 hover:bg-indigo-600/30 border border-indigo-500/30 text-indigo-300 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-colors"
+                    >
+                      {phoneCopied ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+                      <span>{phoneCopied ? 'Copied!' : 'Copy Number'}</span>
+                    </button>
+                  </div>
+
+                  <div className="bg-amber-500/10 border border-amber-500/20 p-3 rounded-xl text-xs text-amber-200/90 leading-relaxed">
+                    <p className="font-bold text-amber-300 mb-0.5">Instructions:</p>
+                    <p>Send the payment via m10 app, then click 'Confirm Payment' below.</p>
+                  </div>
+                </div>
+              )}
             </div>
 
             <button
@@ -397,6 +439,11 @@ export const PricingModal: React.FC<PricingModalProps> = ({
                 <>
                   <div className="w-4 h-4 border-2 border-slate-950 border-t-transparent rounded-full animate-spin" />
                   <span>Processing Secure Checkout...</span>
+                </>
+              ) : paymentMethod === 'm10' ? (
+                <>
+                  <Check className="w-4 h-4" />
+                  <span>Confirm Payment & Add {selectedPlan.creditAmount} Credits</span>
                 </>
               ) : (
                 <>
