@@ -1,0 +1,6 @@
+{
+  "name": "AI Tools Hub",
+  "description": "All-in-one AI Tools Hub with daily 5 free credit system, AI Chat, Prompt Generator, multi-tool suite, and credit packs pricing.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
